@@ -34,9 +34,9 @@ def jobs(experiment, splits):
     elif experiment == "recording_separated":
         grid = itertools.product(block_draws, [3, 4], ["lda"], [5], CHANNEL_SETS, SUBJECTS, [True])
     elif experiment == "baselines":
-        for method, draw, channel, s in itertools.product(baselines.METHODS, random_draws, CHANNELS, SUBJECTS):
-            yield baselines.run, dict(method=method, channel=channel, target=s, draw=draw), \
-                dict(method=method, draw=draw, channel=channel, subject=s, k=5)
+        for method, draw, chans, s in itertools.product(baselines.METHODS, random_draws, CHANNEL_SETS, SUBJECTS):
+            yield baselines.run, dict(method=method, channels=chans, target=s, draw=draw), \
+                dict(method=method, draw=draw, channel="+".join(chans), subject=s, k=5)
         return
     else:
         raise ValueError(experiment)

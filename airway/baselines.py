@@ -22,14 +22,18 @@ def centroids(z, y):
     return np.stack([z[y == lv].mean(axis=0) for lv in LEVELS])
 
 
-def run(method, channel, target, draw, data_dir, splits, k=N_CALIBRATION, recording_separated=False):
-    x, meta = load_channel(data_dir, channel)
-    calib = calibration_rows(splits, draw, channel, meta)
+def run(method, channels, target, draw, data_dir, splits, k=N_CALIBRATION, recording_separated=False):
+    """`channels`: one channel, or ("T7", "T8"), whose features are concatenated."""
+    data = [load_channel(data_dir, c) for c in channels]
+    if any(not m["segment"].equals(data[0][1]["segment"]) for _, m in data):
+        raise ValueError("channels classified together must contain the same segments")
+    x, meta = np.hstack([d[0] for d in data]), data[0][1]
+    calib = calibration_rows(splits, draw, channels[0], meta)
     subject, y = meta["subject"].to_numpy(), meta["level"].to_numpy()
     test = test_rows(meta, target, calib, recording_separated)
     cal = np.array(first_k([r for r in calib if subject[r] == target], y, k))
     src = subject != target
-    mod = modality(channel)
+    mod = modality(channels[0])
 
     if method == "target_only":  # RBF SVM of the proposed method, trained on the calibration segments only
         sc = StandardScaler().fit(x[cal])
