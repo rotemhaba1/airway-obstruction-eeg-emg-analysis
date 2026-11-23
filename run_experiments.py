@@ -15,14 +15,16 @@ from joblib import Parallel, delayed
 
 from airway import baselines, pipeline
 from airway.config import CHANNELS, SUBJECTS
-from airway.data import draw_names
+from airway.data import read_draws
 
 CHANNEL_SETS = [(c,) for c in CHANNELS] + [("T7", "T8")]
 
 
 def jobs(experiment, splits):
     """(function, keyword arguments, labels) for every unit of work."""
-    random_draws, block_draws = draw_names(splits, "d"), draw_names(splits, "blk")
+    draws = sorted(read_draws(splits)["draw"].unique())
+    random_draws = [d for d in draws if d.startswith("d")]
+    block_draws = [d for d in draws if d.startswith("blk")]
     if experiment == "main":
         grid = itertools.product(["main"], [1, 2, 3, 4], ["lda", "pca"], [5], CHANNEL_SETS, SUBJECTS, [False])
     elif experiment == "draws":

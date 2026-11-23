@@ -46,8 +46,7 @@ calibration segments.
 ```
 airway/                 analysis package
     config.py           channels, STFT parameters, classifier settings
-    data.py             loading of the segments and of the calibration draws
-    features.py         STFT features
+    data.py             segments, STFT features and calibration draws
     models.py           LDA/PCA, affine alignment, classifiers
     pipeline.py         Cases 1-4 for one held-out participant
     baselines.py        zero-shot, common-space and target-only baselines

@@ -22,7 +22,7 @@ def evaluate(pred):
     per_level = auc_per_level(y, pred[SCORE].to_numpy())
     out = {"auc": sum(per_level[lv] * np.mean(y == lv) for lv in LEVELS)}
     out.update({f"auc_{lv}": v for lv, v in per_level.items()})
-    if ENS[0] in pred:
+    if ENS[0] in pred and pred[ENS].notna().all().all():
         y_hat = labels(pred[ENS].to_numpy())
         out["balanced_accuracy"] = balanced_accuracy_score(y, y_hat)
         out["macro_f1"] = f1_score(y, y_hat, average="macro")
