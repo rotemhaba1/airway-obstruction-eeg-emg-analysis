@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+
+# recordings are not part of the repository
+data/*
+!data/README.md
+
+# generated output
+results/
